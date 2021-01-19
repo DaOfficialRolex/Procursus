@@ -32,7 +32,7 @@ cmake: cmake-setup ncurses libuv1
 		-DBUILD_CursesDialog:BOOL=ON \
 		-DCURSES_NCURSES_LIBRARY:FILEPATH="$(BUILD_BASE)/usr/lib/libncursesw.dylib" \
 		-DSPHINX_MAN:BOOL=ON \
-                -DCMAKE_USE_SYSTEM_LIBUV=ON \
+		-DCMAKE_USE_SYSTEM_LIBUV=ON \
 		.
 	+$(MAKE) -C $(BUILD_WORK)/cmake install \
 		DESTDIR="$(BUILD_STAGE)/cmake"
