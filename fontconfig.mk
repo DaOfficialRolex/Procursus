@@ -21,12 +21,12 @@ fontconfig: fontconfig-setup gettext freetype uuid expat
 		touch -r $$i $${i//.fncs/.sgml}; \
 	done
 	cd $(BUILD_WORK)/fontconfig && ./configure -C \
-			--host=$(GNU_HOST_TRIPLE) \
-			--prefix=/usr \
-			--sysconfdir=/etc \
-			--localstatedir=/var \
-			--with-add-fonts="/System/Library/Fonts,~/Library/UserFonts" \
-			FREETYPE_CFLAGS="-I$(BUILD_BASE)/usr/include/freetype2 -I$(BUILD_BASE)/usr/include/libpng16"
+		--host=$(GNU_HOST_TRIPLE) \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--with-add-fonts="/System/Library/Fonts,~/Library/UserFonts" \
+		FREETYPE_CFLAGS="-I$(BUILD_BASE)/usr/include/freetype2 -I$(BUILD_BASE)/usr/include/libpng16"
 	+$(MAKE) -C $(BUILD_WORK)/fontconfig
 	+$(MAKE) -C $(BUILD_WORK)/fontconfig install \
 		DESTDIR=$(BUILD_STAGE)/fontconfig
