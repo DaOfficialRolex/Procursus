@@ -3,26 +3,30 @@ $(error Use the main Makefile)
 endif
 
 SUBPROJECTS        += fontconfig
-FONTCONFIG_VERSION := 2.13.1
-DEB_FONTCONFIG_V   ?= $(FONTCONFIG_VERSION)-1
+FONTCONFIG_VERSION := 2.13.93
+DEB_FONTCONFIG_V   ?= $(FONTCONFIG_VERSION)
 
 fontconfig-setup: setup
-	wget -q -nc -P $(BUILD_SOURCE) https://www.freedesktop.org/software/fontconfig/release/fontconfig-$(FONTCONFIG_VERSION).tar.bz2
-	$(call EXTRACT_TAR,fontconfig-$(FONTCONFIG_VERSION).tar.bz2,fontconfig-$(FONTCONFIG_VERSION),fontconfig)
-	$(call DO_PATCH,fontconfig,fontconfig,-p1) # Remove this patch after next release.
+	wget -q -nc -P $(BUILD_SOURCE) https://www.freedesktop.org/software/fontconfig/release/fontconfig-$(FONTCONFIG_VERSION).tar.xz
+	$(call EXTRACT_TAR,fontconfig-$(FONTCONFIG_VERSION).tar.xz,fontconfig-$(FONTCONFIG_VERSION),fontconfig)
+	
 
 ifneq ($(wildcard $(BUILD_WORK)/fontconfig/.build_complete),)
 fontconfig:
 	@echo "Using previously built fontconfig."
 else
 fontconfig: fontconfig-setup gettext freetype uuid expat
+	cd $(BUILD_WORK)/fontconfig; \
+	for i in doc/*.fncs; do \
+		touch -r $$i $${i//.fncs/.sgml}; \
+	done
 	cd $(BUILD_WORK)/fontconfig && ./configure -C \
-		--host=$(GNU_HOST_TRIPLE) \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--with-add-fonts="/System/Library/Fonts,~/Library/UserFonts" \
-		FREETYPE_CFLAGS="-I$(BUILD_BASE)/usr/include/freetype2 -I$(BUILD_BASE)/usr/include/libpng16"
+			--host=$(GNU_HOST_TRIPLE) \
+			--prefix=/usr \
+			--sysconfdir=/etc \
+			--localstatedir=/var \
+			--with-add-fonts="/System/Library/Fonts,~/Library/UserFonts" \
+			FREETYPE_CFLAGS="-I$(BUILD_BASE)/usr/include/freetype2 -I$(BUILD_BASE)/usr/include/libpng16"
 	+$(MAKE) -C $(BUILD_WORK)/fontconfig
 	+$(MAKE) -C $(BUILD_WORK)/fontconfig install \
 		DESTDIR=$(BUILD_STAGE)/fontconfig
